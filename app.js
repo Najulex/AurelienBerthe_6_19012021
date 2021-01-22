@@ -8,7 +8,7 @@ const saucesRoutes = require("./routes/sauces");
 
 mongoose
   .connect(
-    "mongodb+srv://Najulex:XoabjQW52Gqgk8Zh@cluster-p6.vazxj.mongodb.net/<dbname>?retryWrites=true&w=majority",
+    "mongodb+srv://Najulex:XoabjQW52Gqgk8Zh@cluster-p6.vazxj.mongodb.net/dbSopekocko?retryWrites=true&w=majority",
     { useNewUrlParser: true, useUnifiedTopology: true }
   )
   .then(() => console.log("Connexion à MongoDB réussie !"))
