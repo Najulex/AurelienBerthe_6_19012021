@@ -33,7 +33,7 @@ exports.createSauce = (req, res, next) => {
     });
 };
 
-/* récupération des sauces dans la BDD avec méthond find */
+/* récupération des sauces dans la BDD avec méthode find */
 exports.getAllSauces = (req, res, next) => {
   Sauce.find()
     .then((sauces) => res.status(200).json(sauces))
@@ -49,7 +49,8 @@ exports.getOneSauce = (req, res, next) => {
     .catch((error) => res.status(400).json({ error }));
 };
 
-/* supression d'une sauce de la BDD avec méthode findOne pour la retrouver et deleteOne pour la supprimer */
+/* supression d'une sauce de la BDD avec méthode findOne pour la retrouver
+ et deleteOne pour la supprimer puis fs pour supprimer l'image dans le dossier */
 exports.deleteSauce = (req, res, next) => {
   Sauce.findOne({ _id: req.params.id })
     .then((sauce) => {
