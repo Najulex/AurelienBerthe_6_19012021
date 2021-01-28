@@ -8,15 +8,18 @@ const bcrypt = require("bcrypt");
 d'authentification à la connexion des utilisateurs */
 const jwt = require("jsonwebtoken");
 
+/* importation package sha1 pour hasher mdp */
+const sha1 = require("sha1");
+
 /* enregistrement de l'user dans la BDD */
 exports.signup = (req, res, next) => {
   /* application de bcrypt sur le mot de passe avec méthode hash */
   bcrypt
     .hash(req.body.password, 10)
     .then((hash) => {
-      /* création d'une instance du modèle user avec email du body de la requète et mdp hashé */
+      /* création d'une instance du modèle user avec email masqué et mdp hashé */
       const user = new User({
-        email: req.body.email,
+        email: sha1(req.body.email),
         password: hash,
       });
       /* save enregistre dans la BDD et renvoie une promise avec code réussite ou erreur */
@@ -28,16 +31,16 @@ exports.signup = (req, res, next) => {
     .catch((error) => res.status(500).json({ error }));
 };
 
-/* récupération d'un utilisateur dans la BDD avec méthode findOne et l'email du corps de la requète en paramètre */
+/* récupération d'un utilisateur dans la BDD avec méthode findOne et l'email en paramètre */
 exports.login = (req, res, next) => {
-  User.findOne({ email: req.body.email })
+  User.findOne({ email: sha1(req.body.email) })
     .then((user) => {
       /* si user non trouvé message erreur */
       if (!user) {
         return res.status(401).json({ error: "Utilisateur non trouvé !" });
       }
       /* si user trouvé, comparaison du mdp du corps de la requète 
-      avec mdp enregistré dans la BDD avec méthode compare */
+      avec mdp enregistré dans la BDD avec méthode bcrypt compare */
       bcrypt
         .compare(req.body.password, user.password)
         .then((valid) => {
