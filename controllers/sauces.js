@@ -92,7 +92,7 @@ exports.likeSauce = (req, res, next) => {
       { _id: req.params.id },
       { $inc: { likes: 1 }, $push: { usersLiked: req.body.userId } }
     )
-      .then(() => res.status(200).json({ message: "Sauce likée !" }))
+      .then(() => res.status(200).json({ message: "J'aime cette sauce !" }))
       .catch((error) => res.status(400).json({ error }));
   } else if (like === -1) {
     /* si dislike alors +1 sur le champ dislike de la sauce et push de l'userId 
@@ -101,7 +101,9 @@ exports.likeSauce = (req, res, next) => {
       { _id: req.params.id },
       { $inc: { dislikes: 1 }, $push: { usersDisliked: req.body.userId } }
     )
-      .then(() => res.status(200).json({ message: "Sauce dislikée !" }))
+      .then(() =>
+        res.status(200).json({ message: "Je n'aime pas cette sauce !" })
+      )
       .catch((error) => res.status(400).json({ error }));
   } else {
     /* sinon vérification de la présence de l'userId dans le tableau correspondant avec indexOf */
@@ -114,7 +116,9 @@ exports.likeSauce = (req, res, next) => {
             { _id: req.params.id },
             { $inc: { likes: -1 }, $pull: { usersLiked: req.body.userId } }
           )
-            .then(() => res.status(200).json({ message: "Sauce non likée !" }))
+            .then(() =>
+              res.status(200).json({ message: "Je n'aime plus cette sauce !" })
+            )
             .catch((error) => res.status(400).json({ error }));
           /* si l'userId est présent dans le tableau usersDisliked alors -1 sur le champ dislike et 
             pull de l'userId dans le tableau usersDisliked sur l'id de la sauce passé en paramètre */
@@ -127,7 +131,9 @@ exports.likeSauce = (req, res, next) => {
             }
           )
             .then(() =>
-              res.status(200).json({ message: "Sauce non dislikée !" })
+              res
+                .status(200)
+                .json({ message: "'Je n'aime pas cette sauce' supprimée !" })
             )
             .catch((error) => res.status(400).json({ error }));
         }

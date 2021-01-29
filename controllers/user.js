@@ -14,6 +14,7 @@ const sha1 = require("sha1");
 /* enregistrement de l'user dans la BDD */
 exports.signup = (req, res, next) => {
   const pwd = req.body.password;
+  /* vérification du mdp envoyé dans la requète */
   if (
     pwd.match(/[0-9]/g) &&
     pwd.match(/[A-Z]/g) &&
@@ -52,7 +53,11 @@ exports.login = (req, res, next) => {
     .then((user) => {
       /* si user non trouvé message erreur */
       if (!user) {
-        return res.status(401).json({ error: "Adresse email non trouvée !" });
+        return res
+          .status(401)
+          .json({
+            error: "Compte introuvable, vérifiez votre adresse email !",
+          });
       }
       /* si user trouvé, comparaison du mdp du corps de la requète 
       avec mdp enregistré dans la BDD avec méthode bcrypt compare */

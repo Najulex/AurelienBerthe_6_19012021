@@ -13,7 +13,7 @@ module.exports = (req, res, next) => {
     /* si l'userId ne correspond pas avec l'userId présent dans le corps de la requête alors erreur
     si il correspond alors on passe au middleware suivant avec next */
     if (req.body.userId && req.body.userId !== userId) {
-      throw "ID d'utilisateur non valide !";
+      throw "ID d'utilisateur invalide !";
     } else {
       next();
     }
