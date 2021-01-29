@@ -13,24 +13,37 @@ const sha1 = require("sha1");
 
 /* enregistrement de l'user dans la BDD */
 exports.signup = (req, res, next) => {
-  /* application de bcrypt sur le mot de passe avec méthode hash */
-  bcrypt
-    .hash(req.body.password, 10)
-    .then((hash) => {
-      /* création d'une instance du modèle user avec email masqué et mdp hashé */
-      const user = new User({
-        email: sha1(req.body.email),
-        password: hash,
-      });
-      /* save enregistre dans la BDD et renvoie une promise avec code réussite ou erreur */
-      user
-        .save()
-        .then(() => res.status(201).json({ message: "Utilisateur créé !" }))
-        .catch(() =>
-          res.status(400).json({ error: "Adresse mail déjà utilisée !" })
-        );
-    })
-    .catch((error) => res.status(500).json({ error }));
+  const pwd = req.body.password;
+  if (
+    pwd.match(/[0-9]/g) &&
+    pwd.match(/[A-Z]/g) &&
+    pwd.match(/[a-z]/g) &&
+    pwd.length >= 8
+  ) {
+    /* application de bcrypt sur le mot de passe avec méthode hash */
+    bcrypt
+      .hash(pwd, 10)
+      .then((hash) => {
+        /* création d'une instance du modèle user avec email masqué et mdp hashé */
+        const user = new User({
+          email: sha1(req.body.email),
+          password: hash,
+        });
+        /* save enregistre dans la BDD et renvoie une promise avec code réussite ou erreur */
+        user
+          .save()
+          .then(() => res.status(201).json({ message: "Utilisateur créé !" }))
+          .catch(() =>
+            res.status(400).json({ error: "Adresse mail déjà utilisée !" })
+          );
+      })
+      .catch((error) => res.status(500).json({ error }));
+  } else {
+    return res.status(400).json({
+      error:
+        "Votre mot de passe doit contenir au moins un chiffre, une majuscule, une minuscule et 8 caractères.",
+    });
+  }
 };
 
 /* récupération d'un utilisateur dans la BDD avec méthode findOne et l'email en paramètre */
